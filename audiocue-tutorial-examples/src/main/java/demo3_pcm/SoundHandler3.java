@@ -17,8 +17,8 @@ public class SoundHandler3 {
 	private static int instanceNoiseId;
 	private static int NOISE_FRAMES = 1300; // arbitrary
 	private static int SAMPLE_RATE = 44100;
-	// Wavetable given period that results in playback frequency of 100 Hz.
-	private static int WAVETABLE_FRAMES = SAMPLE_RATE / 100; 
+	// The sawtooth array is given a size that results in playback frequency of 100 Hz.
+	private static int SAWTOOTH_WAVE_FRAMES = SAMPLE_RATE / 100; 
 	
 	static {
 		try {
@@ -80,7 +80,7 @@ public class SoundHandler3 {
 
 	private static float[] getPcmForSawtooth() {
 		/*
-		 *  Creates a PCM wavetable of a sawtooth by summing 32 harmonics.
+		 *  Creates a PCM data for a sawtooth by summing 32 harmonics.
 		 *  
 		 *  We use the formula:
 		 *      sin x + (1/2)sin 2*x + (1/3)sin 3*x + ... 
@@ -93,34 +93,32 @@ public class SoundHandler3 {
 		 *  this demo is from 12.5 Hz to 800 Hz, but the amount of aliasing for 
 		 *  the top if this range is at a low amplitude and hard to make out. 
 		 *  Of course, for the lower pitches, more overtones would be desirable. 
-		 *  Hence Wavetable synthesis uses a set of wavetables, each optimized 
-		 *  with a number of overtones befitting a portion of the pitch range. 
-		 *  Here, we are only making a single wavetable.
-		 *  
-		 *  Question, how does looping work if we are interpolating between data 
-		 *  points due to a speed adjustment? 
-		 *  Answer: currently, if (cursor > cueFrameLength - 1) we restart at 0.
-		 *  Better for wavetable playback would be to preserve the increment.
+		 *
+		 *  Currently, if (cursor > cueFrameLength - 1) we restart at 0.
+		 *  Better for looping playback would be to preserve the increment, 
+		 *  i.e., 
+		 *      if (cursor > cueFrameLength) cursor -= cueFrameLength;
+		 *      
 		 *  Should there be two modes possible in the API? (Restart at 0, vs. 
 		 *  restart at (cursor - curFrameLength)? I'm thinking of adding more
 		 *  options to the looping anyway (e.g., start/end points and transition
 		 *  choices). These points will be considered when designing an expanded 
 		 *  API for looping in a future version.
 		 */
-		float[] collector = new float[WAVETABLE_FRAMES]; // to hold PCM sums of sines
+		float[] collector = new float[SAWTOOTH_WAVE_FRAMES]; // to hold PCM sums of sines
 		for (int harmonic = 1; harmonic <= 32 ; harmonic++) {
-			for (int i = 0; i < WAVETABLE_FRAMES; i++) {
+			for (int i = 0; i < SAWTOOTH_WAVE_FRAMES; i++) {
 				// Coded here to show the formula, can be optimized by pre-calculating 
 				// invariants.
 				collector[i] += 
-						Math.sin(2 * Math.PI * harmonic * i / WAVETABLE_FRAMES)
+						Math.sin(2 * Math.PI * harmonic * i / SAWTOOTH_WAVE_FRAMES)
 									/ harmonic;
 			}
 		}
 		
 		// normalize
 		float max = 0;
-		for (int i = 0; i < WAVETABLE_FRAMES; i++) {
+		for (int i = 0; i < SAWTOOTH_WAVE_FRAMES; i++) {
 			if (Math.abs(collector[i]) > max) max = Math.abs(collector[i]);
 		}
 		System.out.println("largest absolute collector value is: " + max
@@ -130,8 +128,8 @@ public class SoundHandler3 {
 		}
 		
 		// make into stereo PCM array
-		float[] stereoPCM = new float[WAVETABLE_FRAMES * 2];
-		for (int i = 0; i < WAVETABLE_FRAMES; i++) {
+		float[] stereoPCM = new float[SAWTOOTH_WAVE_FRAMES * 2];
+		for (int i = 0; i < SAWTOOTH_WAVE_FRAMES; i++) {
 			stereoPCM[i * 2] = collector[i];
 			stereoPCM[i * 2 + 1] = collector[i];
 		}
