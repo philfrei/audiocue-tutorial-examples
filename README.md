@@ -11,7 +11,7 @@ the README for the [AudioCue project](https://github.com/philfrei/AudioCue-maven
 
 There are four sections. Each contains a program (or two) with its own `main()`.
 
-###1. demo1_playback_basics
+### 1. demo1_playback_basics
 
 **SimplePlayback** : This example shows the playing of a cue in a fire-and-forget 
 manner. The play command is triggered from a `JButton`. The sound is configured 
@@ -25,7 +25,7 @@ instance and assigns it a random volume, pan and speed. The lower control is a
 obtained from the `AudioCue`. Below are three sliders that affect playback in 
 real time: one for volume, one for pan, one for speed.
 
-##2. demo2_listener
+### 2. demo2_listener
 
 **AudioCueListenerDemo** : In this example a button plays the sound of a crow cawing 
 a random number of times (from 1 to 4). The graphic used for the face of the button
@@ -34,7 +34,7 @@ changed from a quiet crow to one that is cawing. When the `AudioCue` finishes lo
 the image reverts to the quiet crow. A `JFrame` implements `AudioCueListener` and
 is registered as a Listener via *AudioCue's* `addAudioCueListener` method.
 
-##3. demo3_pcm
+### 3. demo3_pcm
 
 **PCMDemo** : In this example, two `AudioCues` are loaded directly with PCM data. The
 first is given filtered pink noise that is read from a wav file created using 
@@ -43,7 +43,7 @@ envelope. With the second `AudioCue`, a sawtooth wave is constructed from sine
 waves. The PCM values for 32 harmonics are calculated using a sine function and summed 
 together.
 
-##4. demo4_soundscape
+### 4. demo4_soundscape
 
 **SoundscapeBattlefield** : This example shows how a single cue can be used multiple
 ways to create a sonic landscape. The source of the `AudioCue` is a wav file of a 
